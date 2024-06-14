@@ -13,13 +13,21 @@ func main() {
 	count := 0
 	fmt.Printf("Starting Server. Listening on: http://%v", server)
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
 		count++
 		msg := "Site Visits: " + strconv.Itoa(count)
 		fmt.Fprint(w, msg)
 	})
 
 	mux.HandleFunc("POST /reset", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/reset" {
+			http.NotFound(w, r)
+			return
+		}
 		count = 0
 		msg := "Counter was reset"
 		fmt.Fprint(w, msg)
